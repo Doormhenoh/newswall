@@ -1,6 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --color-wall-bg: #08080d;
+  --color-wall-panel: #101018;
+  --color-wall-card: #15151f;
+  --color-wall-border: #232330;
+  --color-wall-muted: #8b8b9e;
+
+  --font-display: 'Archivo Black', Impact, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, ui-monospace, monospace;
+}
 
 @layer base {
   html {
