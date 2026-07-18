@@ -1,18 +1,19 @@
 import { clsx } from 'clsx'
 import { DOWN_MARK, UP_MARK } from '../../lib/accents'
 import { useFearGreed } from '../../lib/queries'
-import { fearGreedZone } from '../../lib/signals'
+import { fearGreedZone, type FearGreedZone } from '../../lib/signals'
 import { Panel } from './Panel'
 import { Sparkline } from './Sparkline'
 
 // Arc fill color per zone; the zone NAME is always rendered as text beside the
-// value, so color never carries the meaning alone.
-function zoneColor(value: number): string {
-  if (value <= 25) return DOWN_MARK
-  if (value <= 45) return '#ea580c'
-  if (value <= 55) return '#ca8a04'
-  if (value <= 75) return '#65a30d'
-  return UP_MARK
+// value, so color never carries the meaning alone. Keyed by the same zone
+// labels signals.ts computes, so the thresholds live in exactly one place.
+const ZONE_COLORS: Record<FearGreedZone, string> = {
+  'Extreme Fear': DOWN_MARK,
+  Fear: '#ea580c',
+  Neutral: '#ca8a04',
+  Greed: '#65a30d',
+  'Extreme Greed': UP_MARK,
 }
 
 const ARC_RADIUS = 80
@@ -23,7 +24,7 @@ export function FearGreedGauge({ className }: { className?: string }) {
 
   const value = data?.current.value ?? 0
   const zone = fearGreedZone(value)
-  const color = zoneColor(value)
+  const color = ZONE_COLORS[zone]
   const history = data?.history.map((p) => p.value) ?? []
   const monthAgo = data?.history[0]?.value
   const monthTrend =

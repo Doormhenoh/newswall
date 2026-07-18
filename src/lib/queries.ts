@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { FeedId } from '../../server/feeds'
+import { QUOTE_SYMBOLS } from '../../server/symbols'
 import type { NewsResponse, QuotesResponse } from '../types'
 import { COINS, fetchCandles, fetchCoinSparkline, fetchCoinTickers } from './binance'
 import type { BinanceSymbol } from './binance'
@@ -7,17 +8,10 @@ import { fetchFearGreed } from './fearGreed'
 
 const MINUTE = 60_000
 
-// One canonical symbol set → one canonical URL → maximal CDN cache hits.
-export const ALL_QUOTE_SYMBOLS = [
-  '^DJI',
-  '^GSPC',
-  '^IXIC',
-  '^KS11',
-  'CL=F',
-  'BZ=F',
-  'GC=F',
-  'RB=F',
-] as const
+// Derived from the same allowlist the server validates against, so the two
+// can never drift — one canonical symbol set → one canonical URL → maximal
+// CDN cache hits.
+export const ALL_QUOTE_SYMBOLS = Object.keys(QUOTE_SYMBOLS)
 
 async function getJson<T>(url: string): Promise<T> {
   const res = await fetch(url)

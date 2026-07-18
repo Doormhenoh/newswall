@@ -1,4 +1,5 @@
 import { useState, type ComponentType } from 'react'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { Header } from './components/layout/Header'
 import { TabBar, type TabDef } from './components/layout/TabBar'
 import { CryptoTab } from './components/tabs/CryptoTab'
@@ -41,7 +42,10 @@ export default function App() {
         aria-labelledby={`tab-${active}`}
         className="mx-auto max-w-7xl px-4 py-4"
       >
-        <ActiveTab />
+        {/* keyed by tab id so switching tabs remounts a crashed boundary */}
+        <ErrorBoundary key={active}>
+          <ActiveTab />
+        </ErrorBoundary>
       </main>
       <footer className="mx-auto max-w-7xl px-4 pb-6 text-center text-[10px] text-wall-muted">
         Data: Yahoo Finance · Stooq · Binance · alternative.me · public RSS feeds — auto-refreshing.

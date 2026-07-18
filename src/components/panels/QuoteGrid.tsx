@@ -1,3 +1,4 @@
+import { QUOTE_SYMBOLS } from '../../../server/symbols'
 import type { Quote, QuoteError } from '../../types'
 import type { Accent } from '../../lib/accents'
 import { formatPrice } from '../../lib/format'
@@ -7,9 +8,12 @@ import { ChangePct } from './ChangePct'
 import { Panel } from './Panel'
 import { Sparkline } from './Sparkline'
 
-const GROUP_SYMBOLS: Record<'index' | 'commodity', readonly string[]> = {
-  index: ['^DJI', '^GSPC', '^IXIC', '^KS11'],
-  commodity: ['CL=F', 'BZ=F', 'GC=F', 'RB=F'],
+// Derived from the server allowlist so group membership can never drift
+// from the symbols the API actually recognizes.
+function symbolsInGroup(group: 'index' | 'commodity'): string[] {
+  return Object.entries(QUOTE_SYMBOLS)
+    .filter(([, def]) => def.group === group)
+    .map(([symbol]) => symbol)
 }
 
 interface QuoteGridProps {
@@ -53,7 +57,7 @@ function QuoteCard({ quote }: { quote: Quote | QuoteError }) {
 
 export function QuoteGrid({ title, accent, badge, group, symbols, className }: QuoteGridProps) {
   const { data, isPending, isError, refetch, dataUpdatedAt } = useQuotes()
-  const wanted = symbols ?? (group ? GROUP_SYMBOLS[group] : ALL_QUOTE_SYMBOLS)
+  const wanted = symbols ?? (group ? symbolsInGroup(group) : ALL_QUOTE_SYMBOLS)
   const visible = (data?.quotes ?? []).filter((q) => wanted.includes(q.symbol))
 
   return (
