@@ -35,20 +35,18 @@ const ATOM_FIXTURE = `<?xml version="1.0" encoding="utf-8"?>
 
 describe('parseFeed', () => {
   it('parses RSS 2.0 items with sanitized titles', () => {
-    const items = parseFeed(RSS2_FIXTURE, 'Test Source')
-    const first = items[0]
-    expect(first.title).toBe('Oil jumps as Hormuz tension rises')
-    expect(first.link).toBe('https://example.com/oil-story')
-    expect(first.source).toBe('Test Source')
-    expect(first.publishedAt).toBe(Date.parse('Fri, 17 Jul 2026 10:00:00 GMT'))
+    const [first] = parseFeed(RSS2_FIXTURE, 'Test Source')
+    expect(first?.title).toBe('Oil jumps as Hormuz tension rises')
+    expect(first?.link).toBe('https://example.com/oil-story')
+    expect(first?.source).toBe('Test Source')
+    expect(first?.publishedAt).toBe(Date.parse('Fri, 17 Jul 2026 10:00:00 GMT'))
   })
 
   it('neutralizes XSS in titles and rejects javascript: links', () => {
-    const items = parseFeed(RSS2_FIXTURE, 'Test Source')
-    const evil = items[1]
-    expect(evil.title).not.toContain('<')
-    expect(evil.title).toContain('Fed decision looms')
-    expect(evil.link).toBeNull()
+    const [, evil] = parseFeed(RSS2_FIXTURE, 'Test Source')
+    expect(evil?.title).not.toContain('<')
+    expect(evil?.title).toContain('Fed decision looms')
+    expect(evil?.link).toBeNull()
   })
 
   it('drops items without a title', () => {
@@ -58,10 +56,11 @@ describe('parseFeed', () => {
 
   it('parses Atom entries and picks the alternate link', () => {
     const items = parseFeed(ATOM_FIXTURE, 'Atom Source')
+    const [first] = items
     expect(items).toHaveLength(1)
-    expect(items[0].title).toBe('Chipmakers & the memory squeeze')
-    expect(items[0].link).toBe('https://example.com/chips')
-    expect(items[0].publishedAt).toBe(Date.parse('2026-07-17T08:30:00Z'))
+    expect(first?.title).toBe('Chipmakers & the memory squeeze')
+    expect(first?.link).toBe('https://example.com/chips')
+    expect(first?.publishedAt).toBe(Date.parse('2026-07-17T08:30:00Z'))
   })
 
   it('returns an empty list for garbage input', () => {

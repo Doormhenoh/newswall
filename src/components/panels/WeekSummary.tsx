@@ -27,7 +27,10 @@ export function WeekSummary({ className }: { className?: string }) {
           {indexes.map((quote) => {
             if ('error' in quote) return null
             const closes = quote.sparkline
-            const weekAgo = closes.length > SESSIONS_PER_WEEK ? closes[closes.length - 1 - SESSIONS_PER_WEEK] : null
+            const weekAgo =
+              closes.length > SESSIONS_PER_WEEK
+                ? (closes.at(-1 - SESSIONS_PER_WEEK) ?? null)
+                : null
             const weekPct =
               weekAgo !== null && weekAgo !== 0 ? ((quote.price - weekAgo) / weekAgo) * 100 : null
             return (

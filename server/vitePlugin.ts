@@ -7,11 +7,16 @@ import { handleNews, handleQuote, type HandlerResult } from './handlers'
 // security headers (CSP etc.) are prod-only via vercel.json — a strict CSP
 // would break Vite HMR in dev.
 
-const DEV_CACHE_TTL: Record<string, number> = {
+type ApiRoute = '/api/quote' | '/api/news'
+const DEV_CACHE_TTL: Record<ApiRoute, number> = {
   '/api/quote': 60_000,
   '/api/news': 600_000,
 }
 const devCache = new Map<string, { expires: number; result: HandlerResult }>()
+
+function isApiRoute(path: string): path is ApiRoute {
+  return path === '/api/quote' || path === '/api/news'
+}
 
 function sendJson(res: ServerResponse, result: HandlerResult) {
   res.statusCode = result.status
@@ -28,7 +33,7 @@ export function newswallApi(): Plugin {
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url ?? '/', 'http://localhost')
         const route = url.pathname
-        if (route !== '/api/quote' && route !== '/api/news') return next()
+        if (!isApiRoute(route)) return next()
 
         const cacheKey = `${route}?${url.searchParams.toString()}`
         const hit = devCache.get(cacheKey)

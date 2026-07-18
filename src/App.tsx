@@ -1,13 +1,7 @@
-import { useState, type ComponentType } from 'react'
+import { lazy, Suspense, useState, type ComponentType } from 'react'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { Header } from './components/layout/Header'
 import { TabBar, type TabDef } from './components/layout/TabBar'
-import { CryptoTab } from './components/tabs/CryptoTab'
-import { GeoTab } from './components/tabs/GeoTab'
-import { MacroTab } from './components/tabs/MacroTab'
-import { MarketsTab } from './components/tabs/MarketsTab'
-import { OverviewTab } from './components/tabs/OverviewTab'
-import { TechTab } from './components/tabs/TechTab'
 
 const TABS = [
   { id: 'overview', label: 'Overview', accent: 'yellow' },
@@ -20,13 +14,25 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]['id']
 
+// Only one tab is ever mounted at a time, so each is its own chunk —
+// loaded on first visit instead of shipped in the initial bundle.
 const TAB_CONTENT: Record<TabId, ComponentType> = {
-  overview: OverviewTab,
-  markets: MarketsTab,
-  crypto: CryptoTab,
-  geo: GeoTab,
-  macro: MacroTab,
-  tech: TechTab,
+  overview: lazy(() => import('./components/tabs/OverviewTab').then((m) => ({ default: m.OverviewTab }))),
+  markets: lazy(() => import('./components/tabs/MarketsTab').then((m) => ({ default: m.MarketsTab }))),
+  crypto: lazy(() => import('./components/tabs/CryptoTab').then((m) => ({ default: m.CryptoTab }))),
+  geo: lazy(() => import('./components/tabs/GeoTab').then((m) => ({ default: m.GeoTab }))),
+  macro: lazy(() => import('./components/tabs/MacroTab').then((m) => ({ default: m.MacroTab }))),
+  tech: lazy(() => import('./components/tabs/TechTab').then((m) => ({ default: m.TechTab }))),
+}
+
+function TabFallback() {
+  return (
+    <div className="grid animate-pulse gap-3 md:grid-cols-2 xl:grid-cols-3" aria-hidden="true">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="h-40 rounded-lg border border-wall-border bg-wall-panel" />
+      ))}
+    </div>
+  )
 }
 
 export default function App() {
@@ -44,7 +50,9 @@ export default function App() {
       >
         {/* keyed by tab id so switching tabs remounts a crashed boundary */}
         <ErrorBoundary key={active}>
-          <ActiveTab />
+          <Suspense fallback={<TabFallback />}>
+            <ActiveTab />
+          </Suspense>
         </ErrorBoundary>
       </main>
       <footer className="mx-auto max-w-7xl px-4 pb-6 text-center text-[10px] text-wall-muted">

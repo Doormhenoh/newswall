@@ -5,9 +5,8 @@ import type { Candle, KeyLevels } from '../types'
 /** Simple moving average over the LAST `period` values; null if not enough data. */
 export function sma(values: number[], period: number): number | null {
   if (period <= 0 || values.length < period) return null
-  let sum = 0
-  for (let i = values.length - period; i < values.length; i++) sum += values[i]
-  return sum / period
+  const window = values.slice(-period)
+  return window.reduce((sum, v) => sum + v, 0) / period
 }
 
 /**

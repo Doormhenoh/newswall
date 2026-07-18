@@ -24,8 +24,10 @@ export function TabBar<Id extends string>({ tabs, active, onChange }: TabBarProp
     else if (event.key === 'Home') next = 0
     else if (event.key === 'End') next = tabs.length - 1
     if (next === null) return
+    const target = tabs[next]
+    if (!target) return
     event.preventDefault()
-    onChange(tabs[next].id)
+    onChange(target.id)
     refs.current[next]?.focus()
   }
 

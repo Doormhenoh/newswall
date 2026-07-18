@@ -110,8 +110,8 @@ describe('handleQuote', () => {
     mockFetch((url) => (url.includes('yahoo.com') ? oversized : stooqOk(50, 55)))
     const result = await handleQuote('GC=F')
     expect(result.status).toBe(200)
-    const quotes = (result.body as { quotes: { source?: string }[] }).quotes
-    expect(quotes[0].source).toBe('stooq')
+    const [quote] = (result.body as { quotes: { source?: string }[] }).quotes
+    expect(quote?.source).toBe('stooq')
   })
 })
 
@@ -167,6 +167,7 @@ describe('handleNews', () => {
     const items = (result.body as { items: { title: string }[] }).items
     const sharedCount = items.filter((i) => i.title === 'Shared Headline').length
     expect(sharedCount).toBe(1)
-    expect(items[0].title).toBe('Newer Story')
+    const [newest] = items
+    expect(newest?.title).toBe('Newer Story')
   })
 })

@@ -1,6 +1,6 @@
 import { FEEDS, isFeedId } from './feeds'
 import { parseFeed } from './rss'
-import { QUOTE_SYMBOLS } from './symbols'
+import { QUOTE_SYMBOLS, type SymbolDef } from './symbols'
 import type { NewsItem, NewsResponse, Quote, QuoteError, QuotesResponse } from './types'
 
 export interface HandlerResult {
@@ -61,8 +61,7 @@ interface YahooChartMeta {
   currency?: string
 }
 
-async function fetchYahooQuote(symbol: string): Promise<Quote> {
-  const def = QUOTE_SYMBOLS[symbol]
+async function fetchYahooQuote(symbol: string, def: SymbolDef): Promise<Quote> {
   const url =
     `https://query1.finance.yahoo.com/v8/finance/chart/` +
     `${encodeURIComponent(symbol)}?range=1mo&interval=1d`
@@ -85,7 +84,7 @@ async function fetchYahooQuote(symbol: string): Promise<Quote> {
     typeof meta.regularMarketPrice === 'number' ? meta.regularMarketPrice : closes.at(-1)
   if (typeof price !== 'number') throw new Error('yahoo: no price in response')
 
-  const prevClose = closes.length >= 2 ? closes[closes.length - 2] : null
+  const prevClose = closes.length >= 2 ? (closes.at(-2) ?? null) : null
   return {
     symbol,
     label: def.label,
@@ -101,8 +100,7 @@ async function fetchYahooQuote(symbol: string): Promise<Quote> {
   }
 }
 
-async function fetchStooqQuote(symbol: string): Promise<Quote> {
-  const def = QUOTE_SYMBOLS[symbol]
+async function fetchStooqQuote(symbol: string, def: SymbolDef): Promise<Quote> {
   const url = `https://stooq.com/q/d/l/?s=${encodeURIComponent(def.stooq)}&i=d`
   const csv = await fetchTextCapped(url, 'text/csv')
   // Format: Date,Open,High,Low,Close,Volume (header + rows, oldest first)
@@ -136,9 +134,19 @@ export async function handleQuote(symbolsParam: string | null): Promise<HandlerR
   if (!symbolsParam) {
     return { status: 400, body: { error: 'missing symbols parameter' }, cacheControl: NO_CACHE }
   }
-  const symbols = [...new Set(symbolsParam.split(',').map((s) => s.trim()))].filter(Boolean)
-  const invalid = symbols.filter((s) => !Object.hasOwn(QUOTE_SYMBOLS, s))
-  if (symbols.length === 0 || invalid.length > 0) {
+  const requested = [...new Set(symbolsParam.split(',').map((s) => s.trim()))].filter(Boolean)
+
+  // Resolve each symbol's allowlist entry up front: an entry only ends up in
+  // `resolved` once it's known to exist, so callers below never need to
+  // re-check QUOTE_SYMBOLS[symbol] for undefined.
+  const resolved: { symbol: string; def: SymbolDef }[] = []
+  const invalid: string[] = []
+  for (const symbol of requested) {
+    const def = QUOTE_SYMBOLS[symbol]
+    if (def) resolved.push({ symbol, def })
+    else invalid.push(symbol)
+  }
+  if (requested.length === 0 || invalid.length > 0) {
     return {
       status: 400,
       body: { error: 'unknown symbol', allowed: Object.keys(QUOTE_SYMBOLS) },
@@ -147,15 +155,15 @@ export async function handleQuote(symbolsParam: string | null): Promise<HandlerR
   }
 
   const quotes = await Promise.all(
-    symbols.map(async (symbol): Promise<Quote | QuoteError> => {
+    resolved.map(async ({ symbol, def }): Promise<Quote | QuoteError> => {
       try {
-        return await fetchYahooQuote(symbol)
+        return await fetchYahooQuote(symbol, def)
       } catch (yahooErr) {
         try {
-          return await fetchStooqQuote(symbol)
+          return await fetchStooqQuote(symbol, def)
         } catch (stooqErr) {
           console.warn(`[quote] ${symbol} failed:`, yahooErr, stooqErr)
-          return { symbol, label: QUOTE_SYMBOLS[symbol].label, error: true }
+          return { symbol, label: def.label, error: true }
         }
       }
     }),
