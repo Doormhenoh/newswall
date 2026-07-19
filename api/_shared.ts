@@ -1,4 +1,4 @@
-import type { HandlerResult } from '../server/handlers'
+import type { HandlerResult } from '../server/handlers.js'
 
 // Vercel skips files starting with "_" when creating serverless functions.
 

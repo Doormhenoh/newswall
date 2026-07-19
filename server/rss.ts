@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser'
-import { safeLink, toPlainText } from './sanitize'
-import type { NewsItem } from './types'
+import { safeLink, toPlainText } from './sanitize.js'
+import type { NewsItem } from './types.js'
 
 // processEntities: false — no entity/DTD expansion (XML-bomb defense).
 // Entities we care about are decoded later by our own bounded decoder.

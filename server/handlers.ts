@@ -1,7 +1,7 @@
-import { FEEDS, isFeedId } from './feeds'
-import { parseFeed } from './rss'
-import { QUOTE_SYMBOLS, type SymbolDef } from './symbols'
-import type { NewsItem, NewsResponse, Quote, QuoteError, QuotesResponse } from './types'
+import { FEEDS, isFeedId } from './feeds.js'
+import { parseFeed } from './rss.js'
+import { QUOTE_SYMBOLS, type SymbolDef } from './symbols.js'
+import type { NewsItem, NewsResponse, Quote, QuoteError, QuotesResponse } from './types.js'
 
 export interface HandlerResult {
   status: number
