@@ -7,11 +7,11 @@ export interface MarketPulseInputs {
   btcChange24h: number
   levels: KeyLevels
   fearGreedValue: number
-  cryptoNewsCount: number
+  cryptoNewsTitles: string[]
 }
 
 export function generateMarketPulse(inputs: MarketPulseInputs): string {
-  const { btcPrice, btcChange24h, levels, fearGreedValue, cryptoNewsCount } = inputs
+  const { btcPrice, btcChange24h, levels, fearGreedValue, cryptoNewsTitles } = inputs
   const parts: string[] = []
 
   parts.push(priceContext(btcPrice, levels))
@@ -21,7 +21,7 @@ export function generateMarketPulse(inputs: MarketPulseInputs): string {
   const sr = supportResistance(btcPrice, levels)
   if (sr) parts.push(sr)
 
-  parts.push(newsVolume(cryptoNewsCount))
+  parts.push(newsContext(cryptoNewsTitles))
 
   return parts.join(' ')
 }
@@ -36,7 +36,7 @@ function priceContext(price: number, levels: KeyLevels): string {
     return `Bitcoin is trading near its 52-week high at ${p}, well above its long-term average.`
   }
   if (aboveMa) {
-    return `Bitcoin is at ${p}, holding above its long-term average — a sign the broader trend is still positive.`
+    return `Bitcoin is at ${p}, holding above its long-term average, a sign the broader trend is still positive.`
   }
   if (!aboveMa && distLow !== null && distLow < 10) {
     return `Bitcoin is trading at ${p} near its 52-week low and below its long-term average, which often signals a prolonged downturn.`
@@ -60,15 +60,15 @@ function sentiment(value: number): string {
   const zone = fearGreedZone(value)
   switch (zone) {
     case 'Extreme Fear':
-      return `Market mood is at ${value} out of 100 — deep in fear territory. Historically, extreme fear can mean the market is oversold and due for a bounce.`
+      return `Market mood is at ${value} out of 100, deep in fear territory. Historically, extreme fear can mean the market is oversold and due for a bounce.`
     case 'Fear':
       return `Market mood sits at ${value} out of 100, in the cautious zone. Traders are nervous and holding back.`
     case 'Neutral':
-      return `Market mood is neutral at ${value} out of 100 — neither panic nor excitement.`
+      return `Market mood is neutral at ${value} out of 100. Neither panic nor excitement is driving the market right now.`
     case 'Greed':
       return `Market mood is at ${value} out of 100, leaning greedy. Confidence is building, but too much optimism can come before a dip.`
     case 'Extreme Greed':
-      return `Market mood has hit ${value} out of 100 — extreme optimism. Markets are euphoric, which historically has come right before pullbacks.`
+      return `Market mood has hit ${value} out of 100, showing extreme optimism. Markets are euphoric, which historically has come right before pullbacks.`
   }
 }
 
@@ -85,8 +85,73 @@ function supportResistance(price: number, levels: KeyLevels): string | null {
   return null
 }
 
-function newsVolume(count: number): string {
-  if (count >= 10) return `Crypto headlines are buzzing with ${count} stories in the feed, suggesting a lot of market attention right now.`
-  if (count >= 5) return `There are ${count} crypto headlines making the rounds today.`
-  return 'Crypto news flow is light today.'
+// ─── News theme detection ────────────────────────────────────────────────────
+
+interface ThemeDef {
+  label: string
+  keywords: string[]
+  impact: string
+}
+
+const NEWS_THEMES: ThemeDef[] = [
+  {
+    label: 'regulatory and legal developments',
+    keywords: ['sec', 'regulation', 'ban', 'lawsuit', 'compliance', 'law', 'sanction', 'enforce', 'probe', 'subpoena', 'court'],
+    impact: 'Regulatory moves tend to create short-term uncertainty as traders weigh how new rules could reshape the market.',
+  },
+  {
+    label: 'ETF and institutional activity',
+    keywords: ['etf', 'institutional', 'blackrock', 'fidelity', 'fund', 'grayscale', 'inflow', 'outflow', 'custody'],
+    impact: 'Institutional interest usually signals growing mainstream confidence, though large inflows or outflows can amplify price swings.',
+  },
+  {
+    label: 'security incidents',
+    keywords: ['hack', 'exploit', 'breach', 'stolen', 'scam', 'fraud', 'vulnerability', 'attack', 'drain'],
+    impact: 'Security incidents erode trust in affected projects and can trigger sell-offs as investors move funds to safer positions.',
+  },
+  {
+    label: 'bullish momentum',
+    keywords: ['rally', 'surge', 'high', 'bullish', 'soar', 'pump', 'breakout', 'record', 'moon', 'gain'],
+    impact: 'Strong upward momentum often attracts more buyers, but rapid rallies can also set the stage for corrections when profit-taking kicks in.',
+  },
+  {
+    label: 'bearish pressure',
+    keywords: ['crash', 'plunge', 'dump', 'bearish', 'drop', 'sell-off', 'tumble', 'slump', 'decline', 'loss'],
+    impact: 'Sustained negative coverage tends to deepen sell pressure, though sharp drops have historically been followed by relief bounces.',
+  },
+  {
+    label: 'adoption and partnerships',
+    keywords: ['adopt', 'accept', 'partner', 'launch', 'integrate', 'payment', 'merchant', 'onboard', 'expand'],
+    impact: 'Growing adoption strengthens the long-term case for crypto by expanding real-world utility and broadening the user base.',
+  },
+]
+
+function newsContext(titles: string[]): string {
+  if (titles.length === 0) return 'News flow is quiet today with limited crypto coverage.'
+
+  const counts = new Map<ThemeDef, number>()
+  const combined = titles.join(' ').toLowerCase()
+
+  for (const theme of NEWS_THEMES) {
+    let hits = 0
+    for (const kw of theme.keywords) {
+      if (combined.includes(kw)) hits++
+    }
+    if (hits > 0) counts.set(theme, hits)
+  }
+
+  const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1])
+
+  if (ranked.length === 0) {
+    return 'News flow is mixed today with no single theme dominating the headlines.'
+  }
+
+  const top = ranked[0]!
+  const second = ranked.length > 1 ? ranked[1] : undefined
+
+  if (second && second[1] >= top[1] * 0.6) {
+    return `Recent headlines are focused on ${top[0].label} and ${second[0].label}. ${top[0].impact}`
+  }
+
+  return `Recent headlines are centered around ${top[0].label}. ${top[0].impact}`
 }

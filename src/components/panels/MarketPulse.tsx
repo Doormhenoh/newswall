@@ -22,6 +22,11 @@ export function MarketPulse({ className }: { className?: string }) {
   const isPending =
     candles.isPending || fearGreed.isPending || coins.isPending || news.isPending
 
+  const newsTitles = useMemo(
+    () => (news.data?.items ?? []).map((i) => i.title),
+    [news.data?.items],
+  )
+
   const paragraph = useMemo(() => {
     if (!isReady) return ''
     return generateMarketPulse({
@@ -29,9 +34,9 @@ export function MarketPulse({ className }: { className?: string }) {
       btcChange24h: btc.changePct24h,
       levels,
       fearGreedValue: fgValue,
-      cryptoNewsCount: news.data?.items.length ?? 0,
+      cryptoNewsTitles: newsTitles,
     })
-  }, [isReady, levels, btc, fgValue, news.data?.items.length])
+  }, [isReady, levels, btc, fgValue, newsTitles])
 
   const earliestUpdate = Math.min(
     candles.dataUpdatedAt || Infinity,
