@@ -38,14 +38,13 @@ export function CryptoGrid({ className }: { className?: string }) {
     <Panel
       title="Crypto Prices"
       accent="orange"
-      badge="6"
-      updatedAt={dataUpdatedAt}
+            updatedAt={dataUpdatedAt}
       isLoading={isPending}
       isError={isError && !data}
       onRetry={() => void refetch()}
       className={className}
     >
-      <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-1.5 lg:grid-cols-3">
         {(data ?? []).map((coin) => (
           <CoinCard key={coin.symbol} coin={coin} />
         ))}

@@ -4,12 +4,16 @@ interface FngApiResponse {
   data?: { value: string; timestamp: string }[]
 }
 
+const MAX_RESPONSE_BYTES = 500_000
+
 export async function fetchFearGreed(): Promise<FearGreedData> {
   const res = await fetch('https://api.alternative.me/fng/?limit=30', {
     signal: AbortSignal.timeout(10_000),
   })
   if (!res.ok) throw new Error(`Fear & Greed request failed: ${res.status}`)
-  const json = (await res.json()) as FngApiResponse
+  const text = await res.text()
+  if (text.length > MAX_RESPONSE_BYTES) throw new Error('Fear & Greed: response too large')
+  const json = JSON.parse(text) as FngApiResponse
 
   const history = (json.data ?? [])
     .map((d) => ({ value: Number(d.value), timestamp: Number(d.timestamp) * 1000 }))

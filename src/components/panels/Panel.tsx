@@ -42,8 +42,8 @@ export function Panel({
 }: PanelProps) {
   const styles = ACCENT_STYLES[accent]
   return (
-    <section className={clsx('flex flex-col rounded-lg border bg-wall-panel', styles.border, className)}>
-      <header className="flex items-center gap-2 border-b border-wall-border/60 px-3 py-2">
+    <section className={clsx('flex flex-col rounded-xl border bg-wall-panel', styles.border, className)}>
+      <header className="flex items-center gap-2 border-b border-wall-border/40 px-3 py-2">
         {badge && (
           <span
             className={clsx(
@@ -59,7 +59,7 @@ export function Panel({
           <span className="ml-auto text-[10px] text-wall-muted">{timeAgo(updatedAt)}</span>
         )}
       </header>
-      <div className="flex-1 p-3">
+      <div className="flex-1 p-2.5">
         {isError ? (
           <div className="flex flex-col items-center gap-2 py-6 text-sm text-wall-muted">
             <span>Data unavailable</span>

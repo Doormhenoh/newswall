@@ -13,13 +13,20 @@ const MINUTE = 60_000
 // CDN cache hits.
 export const ALL_QUOTE_SYMBOLS = Object.keys(QUOTE_SYMBOLS)
 
+const CLIENT_TIMEOUT_MS = 15_000
+const MAX_CLIENT_RESPONSE_BYTES = 2_000_000
+
 async function getJson<T>(url: string): Promise<T> {
-  const res = await fetch(url)
+  const res = await fetch(url, { signal: AbortSignal.timeout(CLIENT_TIMEOUT_MS) })
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as { error?: string } | null
     throw new Error(body?.error ?? `request failed: ${res.status}`)
   }
-  return res.json() as Promise<T>
+  const text = await res.text()
+  if (text.length > MAX_CLIENT_RESPONSE_BYTES) {
+    throw new Error('response too large')
+  }
+  return JSON.parse(text) as T
 }
 
 export function useQuotes() {

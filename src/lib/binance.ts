@@ -15,10 +15,14 @@ export const COINS = [
 
 export type BinanceSymbol = (typeof COINS)[number]['binance']
 
+const MAX_RESPONSE_BYTES = 2_000_000
+
 async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(url, { signal: AbortSignal.timeout(10_000) })
   if (!res.ok) throw new Error(`Binance request failed: ${res.status}`)
-  return res.json() as Promise<T>
+  const text = await res.text()
+  if (text.length > MAX_RESPONSE_BYTES) throw new Error('Binance response too large')
+  return JSON.parse(text) as T
 }
 
 interface Binance24hTicker {

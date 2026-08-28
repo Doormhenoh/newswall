@@ -12,6 +12,7 @@ const DEV_CACHE_TTL: Record<ApiRoute, number> = {
   '/api/quote': 60_000,
   '/api/news': 600_000,
 }
+const MAX_DEV_CACHE_ENTRIES = 50
 const devCache = new Map<string, { expires: number; result: HandlerResult }>()
 
 function isApiRoute(path: string): path is ApiRoute {
@@ -22,6 +23,8 @@ function sendJson(res: ServerResponse, result: HandlerResult) {
   res.statusCode = result.status
   res.setHeader('Content-Type', 'application/json; charset=utf-8')
   res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'DENY')
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin')
   res.setHeader('Cache-Control', result.cacheControl)
   res.end(JSON.stringify(result.body))
 }
@@ -47,12 +50,16 @@ export function newswallApi(): Plugin {
         handle
           .then((result) => {
             if (result.status === 200) {
+              if (devCache.size >= MAX_DEV_CACHE_ENTRIES) {
+                const oldest = devCache.keys().next().value
+                if (oldest !== undefined) devCache.delete(oldest)
+              }
               devCache.set(cacheKey, { expires: Date.now() + DEV_CACHE_TTL[route], result })
             }
             sendJson(res, result)
           })
           .catch((err: unknown) => {
-            console.error('[newswall-api]', err)
+            console.error('[newswall-api]', err instanceof Error ? err.message : 'unknown error')
             sendJson(res, { status: 500, body: { error: 'internal error' }, cacheControl: 'no-store' })
           })
       })
