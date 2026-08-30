@@ -28,21 +28,20 @@ export function generateMarketPulse(inputs: MarketPulseInputs): string {
 
 function priceContext(price: number, levels: KeyLevels): string {
   const p = `$${formatPrice(price)}`
-  const aboveMa = levels.ma200d !== null && price > levels.ma200d
-  const distHigh = pctFrom(price, levels.high52w)
-  const distLow = pctFrom(price, levels.low52w)
+  const above200d = levels.ma200d !== null && price > levels.ma200d
+  const above50d = levels.ma50d !== null && price > levels.ma50d
 
-  if (aboveMa && distHigh !== null && distHigh > -5) {
-    return `Bitcoin is trading near its 52-week high at ${p}, well above its long-term average.`
+  if (above200d && above50d) {
+    return `Bitcoin is at ${p}, trading above both its 200-day and 50-day moving averages. That alignment suggests a strong uptrend across both short and long timeframes.`
   }
-  if (aboveMa) {
-    return `Bitcoin is at ${p}, holding above its long-term average, a sign the broader trend is still positive.`
+  if (above200d && !above50d && levels.ma50d !== null) {
+    return `Bitcoin is at ${p}, still above its long-term 200-day average but has slipped below the 50-day moving average. The long-term trend is positive, though short-term momentum is fading.`
   }
-  if (!aboveMa && distLow !== null && distLow < 10) {
-    return `Bitcoin is trading at ${p} near its 52-week low and below its long-term average, which often signals a prolonged downturn.`
+  if (!above200d && above50d && levels.ma200d !== null) {
+    return `Bitcoin is at ${p}, below its long-term 200-day average but climbing back above the 50-day moving average. This can be an early sign of recovery, though a sustained move above the 200-day would confirm it.`
   }
-  if (!aboveMa && levels.ma200d !== null) {
-    return `Bitcoin is at ${p}, sitting below its long-term average. It may be searching for a floor.`
+  if (!above200d && !above50d && levels.ma200d !== null) {
+    return `Bitcoin is at ${p}, sitting below both its 200-day and 50-day moving averages. Both timeframes point downward, which typically signals continued bearish pressure.`
   }
   return `Bitcoin is trading at ${p}.`
 }

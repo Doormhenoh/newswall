@@ -18,7 +18,6 @@ export function computeKeyLevels(daily: Candle[], weekly: Candle[]): KeyLevels |
   const price = closes.at(-1)
   if (price === undefined) return null
 
-  const year = daily.slice(-365)
   const month = daily.slice(-30)
   return {
     price,
@@ -27,8 +26,7 @@ export function computeKeyLevels(daily: Candle[], weekly: Candle[]): KeyLevels |
       weekly.map((c) => c.close),
       200,
     ),
-    high52w: Math.max(...year.map((c) => c.high)),
-    low52w: Math.min(...year.map((c) => c.low)),
+    ma50d: sma(closes, 50),
     support30d: Math.min(...month.map((c) => c.low)),
     resistance30d: Math.max(...month.map((c) => c.high)),
   }
