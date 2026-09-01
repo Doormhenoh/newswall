@@ -13,7 +13,7 @@ export function KeyLevels({ className }: { className?: string }) {
     ? [
         { label: '200-day MA', value: levels.ma200d },
         { label: '200-week MA', value: levels.ma200w },
-        { label: '50-day MA', value: levels.ma50d },
+        { label: '50-week MA', value: levels.ma50w },
         { label: '30-day support', value: levels.support30d },
         { label: '30-day resistance', value: levels.resistance30d },
       ]

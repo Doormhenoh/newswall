@@ -38,7 +38,7 @@ export interface KeyLevels {
   price: number
   ma200d: number | null
   ma200w: number | null
-  ma50d: number | null
+  ma50w: number | null
   support30d: number
   resistance30d: number
 }

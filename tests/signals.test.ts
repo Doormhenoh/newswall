@@ -30,7 +30,7 @@ describe('computeKeyLevels', () => {
     const levels = computeKeyLevels(daily, weekly)
     expect(levels).not.toBeNull()
     expect(levels!.price).toBeCloseTo(100 + 364 * 0.1)
-    expect(levels!.ma50d).not.toBeNull()
+    expect(levels!.ma50w).not.toBeNull()
     expect(levels!.ma200d).not.toBeNull()
     expect(levels!.ma200w).not.toBeNull()
     // support (30d min low) below resistance (30d max high)

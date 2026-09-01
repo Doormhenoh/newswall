@@ -26,7 +26,10 @@ export function computeKeyLevels(daily: Candle[], weekly: Candle[]): KeyLevels |
       weekly.map((c) => c.close),
       200,
     ),
-    ma50d: sma(closes, 50),
+    ma50w: sma(
+      weekly.map((c) => c.close),
+      50,
+    ),
     support30d: Math.min(...month.map((c) => c.low)),
     resistance30d: Math.max(...month.map((c) => c.high)),
   }

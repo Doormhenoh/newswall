@@ -29,19 +29,19 @@ export function generateMarketPulse(inputs: MarketPulseInputs): string {
 function priceContext(price: number, levels: KeyLevels): string {
   const p = `$${formatPrice(price)}`
   const above200d = levels.ma200d !== null && price > levels.ma200d
-  const above50d = levels.ma50d !== null && price > levels.ma50d
+  const above50w = levels.ma50w !== null && price > levels.ma50w
 
-  if (above200d && above50d) {
-    return `Bitcoin is at ${p}, trading above both its 200-day and 50-day moving averages. That alignment suggests a strong uptrend across both short and long timeframes.`
+  if (above200d && above50w) {
+    return `Bitcoin is at ${p}, trading above both its 200-day and 50-week moving averages. That alignment suggests a strong uptrend across both short and long timeframes.`
   }
-  if (above200d && !above50d && levels.ma50d !== null) {
-    return `Bitcoin is at ${p}, still above its long-term 200-day average but has slipped below the 50-day moving average. The long-term trend is positive, though short-term momentum is fading.`
+  if (above200d && !above50w && levels.ma50w !== null) {
+    return `Bitcoin is at ${p}, still above its 200-day average but has slipped below the 50-week moving average. The daily trend is positive, though the longer weekly trend shows some weakness.`
   }
-  if (!above200d && above50d && levels.ma200d !== null) {
-    return `Bitcoin is at ${p}, below its long-term 200-day average but climbing back above the 50-day moving average. This can be an early sign of recovery, though a sustained move above the 200-day would confirm it.`
+  if (!above200d && above50w && levels.ma200d !== null) {
+    return `Bitcoin is at ${p}, below its 200-day average but holding above the 50-week moving average. The weekly structure remains intact, though the daily trend needs to recover for full confirmation.`
   }
-  if (!above200d && !above50d && levels.ma200d !== null) {
-    return `Bitcoin is at ${p}, sitting below both its 200-day and 50-day moving averages. Both timeframes point downward, which typically signals continued bearish pressure.`
+  if (!above200d && !above50w && levels.ma200d !== null) {
+    return `Bitcoin is at ${p}, sitting below both its 200-day and 50-week moving averages. Both timeframes point downward, which typically signals continued bearish pressure.`
   }
   return `Bitcoin is trading at ${p}.`
 }
