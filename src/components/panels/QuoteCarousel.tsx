@@ -12,7 +12,7 @@ const SPEED_PX_PER_SEC = 40
 function CarouselCard({ quote }: { quote: Quote | QuoteError }) {
   if ('error' in quote) {
     return (
-      <div className="w-40 shrink-0 rounded-md border border-wall-border bg-wall-card p-3 sm:w-44">
+      <div className="w-40 shrink-0 rounded-md bg-wall-card p-3 shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)] sm:w-44">
         <div className="text-xs font-semibold uppercase tracking-wide text-wall-muted">
           {quote.label}
         </div>
@@ -21,14 +21,14 @@ function CarouselCard({ quote }: { quote: Quote | QuoteError }) {
     )
   }
   return (
-    <div className="w-40 shrink-0 rounded-md border border-wall-border bg-wall-card p-3 sm:w-44">
+    <div className="w-40 shrink-0 rounded-md bg-wall-card p-3 shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)] sm:w-44">
       <div className="flex items-baseline justify-between gap-2">
         <span className="text-xs font-semibold uppercase tracking-wide text-wall-muted">
           {quote.label}
         </span>
         <ChangePct value={quote.changePct} className="text-xs" />
       </div>
-      <div className="mt-1 font-mono text-lg text-slate-100">{formatPrice(quote.price)}</div>
+      <div className="mt-1 font-mono tabular-nums text-lg text-slate-100">{formatPrice(quote.price)}</div>
       <Sparkline
         data={quote.sparkline}
         trend={trendOf(quote.changePct)}
@@ -94,13 +94,19 @@ export function QuoteCarousel({ className }: { className?: string }) {
   if (isPending && quotes.length === 0) {
     return (
       <div
-        className={`overflow-hidden rounded-xl border border-wall-border bg-wall-panel p-2 ${className ?? ''}`}
+        className={`overflow-hidden rounded-xl bg-wall-panel p-2 shadow-[var(--shadow-panel)] ${className ?? ''}`}
       >
         <div className="flex gap-2">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="h-24 w-40 shrink-0 animate-pulse rounded-md bg-wall-card sm:w-44"
+              className="h-24 w-40 shrink-0 rounded-md sm:w-44"
+              style={{
+                background: 'linear-gradient(90deg, var(--color-wall-card) 25%, var(--color-wall-border) 50%, var(--color-wall-card) 75%)',
+                backgroundSize: '200% 100%',
+                animation: `shimmer 1.5s var(--ease-in-out) infinite`,
+                animationDelay: `${i * 100}ms`,
+              }}
             />
           ))}
         </div>
@@ -112,7 +118,7 @@ export function QuoteCarousel({ className }: { className?: string }) {
     <div
       role="region"
       aria-label="Market quotes carousel"
-      className={`overflow-hidden rounded-xl border border-wall-border bg-wall-panel p-2 ${className ?? ''}`}
+      className={`overflow-hidden rounded-xl bg-wall-panel p-2 shadow-[var(--shadow-panel)] ${className ?? ''}`}
       onMouseEnter={handlePause}
       onMouseLeave={handleResume}
       onTouchStart={handlePause}

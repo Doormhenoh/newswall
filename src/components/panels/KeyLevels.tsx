@@ -33,14 +33,14 @@ export function KeyLevels({ className }: { className?: string }) {
         <div>
           <div className="mb-2 flex items-baseline gap-2">
             <span className="text-[10px] uppercase tracking-wide text-wall-muted">BTC/USD</span>
-            <span className="font-mono text-xl text-slate-100">${formatPrice(levels.price)}</span>
+            <span className="font-mono tabular-nums text-xl text-slate-100">${formatPrice(levels.price)}</span>
           </div>
           <table className="w-full text-sm">
             <tbody>
               {rows.map((row) => (
                 <tr key={row.label} className="border-b border-wall-border/40 last:border-0">
                   <td className="py-1.5 pr-2 text-wall-muted">{row.label}</td>
-                  <td className="py-1.5 pr-2 text-right font-mono text-slate-200">
+                  <td className="py-1.5 pr-2 text-right font-mono tabular-nums text-slate-200">
                     {row.value !== null ? `$${formatPrice(row.value)}` : '—'}
                   </td>
                   <td className="py-1.5 text-right">

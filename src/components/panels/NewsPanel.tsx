@@ -40,7 +40,7 @@ export function NewsPanel({ feed, title, accent, badge, limit = 10, className }:
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm leading-snug text-slate-200 transition-colors hover:text-white"
+                className="text-sm leading-snug text-slate-200 transition-[color,opacity] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-white focus-visible:text-white focus-visible:underline focus-visible:outline-none"
               >
                 {item.title}
               </a>

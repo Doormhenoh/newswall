@@ -54,10 +54,10 @@ export function TabBar<Id extends string>({ tabs, active, onChange }: TabBarProp
             onClick={() => onChange(tab.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={clsx(
-              'whitespace-nowrap rounded-t-md border-b-2 px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors',
+              'whitespace-nowrap rounded-t-md border-b-2 px-3 py-2 text-xs font-bold uppercase tracking-wider transition-[color,opacity] duration-[var(--duration-fast)] ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-wall-bg',
               selected
                 ? clsx('bg-wall-panel', styles.text, styles.borderB)
-                : 'border-transparent text-wall-muted hover:text-slate-300',
+                : 'border-transparent text-wall-muted opacity-70 hover:text-slate-300 hover:opacity-100',
             )}
           >
             {tab.label}

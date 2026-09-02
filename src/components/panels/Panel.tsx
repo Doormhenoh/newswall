@@ -17,9 +17,19 @@ interface PanelProps {
 
 function Skeleton() {
   return (
-    <div className="animate-pulse space-y-3 py-1" aria-hidden="true">
+    <div className="space-y-3 py-1" aria-hidden="true">
       {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="h-3 rounded bg-wall-border/60" style={{ width: `${90 - i * 12}%` }} />
+        <div
+          key={i}
+          className="h-3 rounded"
+          style={{
+            width: `${90 - i * 12}%`,
+            background: 'linear-gradient(90deg, var(--color-wall-border) 25%, var(--color-wall-card) 50%, var(--color-wall-border) 75%)',
+            backgroundSize: '200% 100%',
+            animation: `shimmer 1.5s var(--ease-in-out) infinite`,
+            animationDelay: `${i * 80}ms`,
+          }}
+        />
       ))}
     </div>
   )
@@ -42,7 +52,7 @@ export function Panel({
 }: PanelProps) {
   const styles = ACCENT_STYLES[accent]
   return (
-    <section className={clsx('flex flex-col rounded-xl border bg-wall-panel', styles.border, className)}>
+    <section className={clsx('flex flex-col rounded-xl border-t-2 bg-wall-panel shadow-[var(--shadow-panel)]', styles.borderT, className)}>
       <header className="flex items-center gap-2 border-b border-wall-border/40 px-3 py-2">
         {badge && (
           <span
@@ -66,7 +76,7 @@ export function Panel({
             {onRetry && (
               <button
                 onClick={onRetry}
-                className="rounded border border-wall-border px-3 py-1 text-xs text-slate-300 transition-colors hover:bg-wall-card"
+                className="rounded border border-wall-border px-3 py-1 text-xs text-slate-300 transition-[background-color,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:bg-wall-card hover:shadow-[var(--shadow-card)]"
               >
                 Retry
               </button>
@@ -75,7 +85,9 @@ export function Panel({
         ) : isLoading ? (
           <Skeleton />
         ) : (
-          children
+          <div style={{ animation: 'fade-in var(--duration-normal) var(--ease-out) both' }}>
+            {children}
+          </div>
         )}
       </div>
     </section>

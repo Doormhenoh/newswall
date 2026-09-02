@@ -9,6 +9,14 @@
 
   --font-display: 'Archivo Black', Impact, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', Consolas, ui-monospace, monospace;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-card-hover: 0 4px 12px 0 rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-panel: 0 2px 8px 0 rgb(0 0 0 / 0.45);
 }
 
 @layer base {
@@ -17,6 +25,31 @@
   }
   body {
     @apply bg-wall-bg text-slate-200 antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(99 102 241 / 0.6);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
   }
 }
 

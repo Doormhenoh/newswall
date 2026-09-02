@@ -8,6 +8,7 @@ interface AccentStyle {
   text: string
   border: string
   borderB: string
+  borderT: string
   badge: string
 }
 
@@ -17,42 +18,49 @@ export const ACCENT_STYLES: Record<Accent, AccentStyle> = {
     text: 'text-red-400',
     border: 'border-red-500/30',
     borderB: 'border-b-red-500',
+    borderT: 'border-t-red-500/60',
     badge: 'bg-red-500/15 text-red-400',
   },
   blue: {
     text: 'text-sky-400',
     border: 'border-sky-500/30',
     borderB: 'border-b-sky-500',
+    borderT: 'border-t-sky-500/60',
     badge: 'bg-sky-500/15 text-sky-400',
   },
   magenta: {
     text: 'text-fuchsia-400',
     border: 'border-fuchsia-500/30',
     borderB: 'border-b-fuchsia-500',
+    borderT: 'border-t-fuchsia-500/60',
     badge: 'bg-fuchsia-500/15 text-fuchsia-400',
   },
   green: {
     text: 'text-emerald-400',
     border: 'border-emerald-500/30',
     borderB: 'border-b-emerald-500',
+    borderT: 'border-t-emerald-500/60',
     badge: 'bg-emerald-500/15 text-emerald-400',
   },
   orange: {
     text: 'text-orange-400',
     border: 'border-orange-500/30',
     borderB: 'border-b-orange-500',
+    borderT: 'border-t-orange-500/60',
     badge: 'bg-orange-500/15 text-orange-400',
   },
   yellow: {
     text: 'text-yellow-400',
     border: 'border-yellow-500/30',
     borderB: 'border-b-yellow-500',
+    borderT: 'border-t-yellow-500/60',
     badge: 'bg-yellow-500/15 text-yellow-400',
   },
   purple: {
     text: 'text-purple-400',
     border: 'border-purple-500/30',
     borderB: 'border-b-purple-500',
+    borderT: 'border-t-purple-500/60',
     badge: 'bg-purple-500/15 text-purple-400',
   },
 }
