@@ -4,12 +4,12 @@ import { Header } from './components/layout/Header'
 import { TabBar, type TabDef } from './components/layout/TabBar'
 
 const TABS = [
-  { id: 'overview', label: 'Overview', accent: 'yellow' },
-  { id: 'markets', label: 'Markets & Energy', accent: 'magenta' },
-  { id: 'crypto', label: 'Crypto', accent: 'orange' },
-  { id: 'geo', label: 'Geo / War', accent: 'red' },
-  { id: 'macro', label: 'Macro & Policy', accent: 'blue' },
-  { id: 'tech', label: 'Tech & Corporates', accent: 'green' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'markets', label: 'Markets & Energy' },
+  { id: 'crypto', label: 'Crypto' },
+  { id: 'geo', label: 'Geo / War' },
+  { id: 'macro', label: 'Macro & Policy' },
+  { id: 'tech', label: 'Tech & Corporates' },
 ] as const satisfies readonly TabDef<string>[]
 
 type TabId = (typeof TABS)[number]['id']

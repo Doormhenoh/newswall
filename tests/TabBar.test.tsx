@@ -13,9 +13,9 @@ afterEach(cleanup)
 
 type Id = 'a' | 'b' | 'c'
 const TABS: readonly TabDef<Id>[] = [
-  { id: 'a', label: 'Alpha', accent: 'red' },
-  { id: 'b', label: 'Beta', accent: 'blue' },
-  { id: 'c', label: 'Gamma', accent: 'green' },
+  { id: 'a', label: 'Alpha' },
+  { id: 'b', label: 'Beta' },
+  { id: 'c', label: 'Gamma' },
 ]
 
 // Controlled like real usage in App.tsx, so keyboard/click nav is exercised

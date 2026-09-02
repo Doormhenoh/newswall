@@ -52,7 +52,7 @@ export function Panel({
 }: PanelProps) {
   const styles = ACCENT_STYLES[accent]
   return (
-    <section className={clsx('flex flex-col rounded-xl border-t-2 bg-wall-panel shadow-[var(--shadow-panel)]', styles.borderT, className)}>
+    <section className={clsx('flex flex-col rounded-lg border-t-2 bg-wall-panel shadow-[var(--shadow-panel)]', styles.borderT, className)}>
       <header className="flex items-center gap-2 border-b border-wall-border/40 px-3 py-2">
         {badge && (
           <span

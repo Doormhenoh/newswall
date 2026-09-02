@@ -1,22 +1,23 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-wall-bg: #08080d;
-  --color-wall-panel: #101018;
-  --color-wall-card: #15151f;
-  --color-wall-border: #1e1e2a;
-  --color-wall-muted: #8b8b9e;
+  --color-wall-bg: #121212;
+  --color-wall-panel: #1e1e1e;
+  --color-wall-card: #262626;
+  --color-wall-border: #1f2937;
+  --color-wall-muted: #d1d5db;
 
-  --font-display: 'Archivo Black', Impact, system-ui, sans-serif;
+  --font-display: 'Raleway', system-ui, sans-serif;
+  --font-body: 'Montserrat', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', Consolas, ui-monospace, monospace;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --duration-fast: 150ms;
   --duration-normal: 250ms;
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-  --shadow-card-hover: 0 4px 12px 0 rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-panel: 0 2px 8px 0 rgb(0 0 0 / 0.45);
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2);
+  --shadow-card-hover: 0 4px 12px 0 rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --shadow-panel: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 @layer base {
@@ -24,7 +25,7 @@
     color-scheme: dark;
   }
   body {
-    @apply bg-wall-bg text-slate-200 antialiased;
+    @apply bg-wall-bg font-body text-[#f3f4f6] antialiased;
   }
   :focus-visible {
     outline: 2px solid rgb(99 102 241 / 0.6);
@@ -58,7 +59,7 @@
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2c2c3a;
+  background: #374151;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-track {

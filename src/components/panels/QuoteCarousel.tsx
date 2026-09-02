@@ -94,7 +94,7 @@ export function QuoteCarousel({ className }: { className?: string }) {
   if (isPending && quotes.length === 0) {
     return (
       <div
-        className={`overflow-hidden rounded-xl bg-wall-panel p-2 shadow-[var(--shadow-panel)] ${className ?? ''}`}
+        className={`overflow-hidden rounded-lg bg-wall-panel p-2 shadow-[var(--shadow-panel)] ${className ?? ''}`}
       >
         <div className="flex gap-2">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -118,7 +118,7 @@ export function QuoteCarousel({ className }: { className?: string }) {
     <div
       role="region"
       aria-label="Market quotes carousel"
-      className={`overflow-hidden rounded-xl bg-wall-panel p-2 shadow-[var(--shadow-panel)] ${className ?? ''}`}
+      className={`overflow-hidden rounded-lg bg-wall-panel p-2 shadow-[var(--shadow-panel)] ${className ?? ''}`}
       onMouseEnter={handlePause}
       onMouseLeave={handleResume}
       onTouchStart={handlePause}

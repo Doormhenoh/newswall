@@ -1,11 +1,9 @@
 import { useRef } from 'react'
 import { clsx } from 'clsx'
-import { ACCENT_STYLES, type Accent } from '../../lib/accents'
 
 export interface TabDef<Id extends string> {
   id: Id
   label: string
-  accent: Accent
 }
 
 interface TabBarProps<Id extends string> {
@@ -39,7 +37,6 @@ export function TabBar<Id extends string>({ tabs, active, onChange }: TabBarProp
     >
       {tabs.map((tab, index) => {
         const selected = tab.id === active
-        const styles = ACCENT_STYLES[tab.accent]
         return (
           <button
             key={tab.id}
@@ -54,13 +51,16 @@ export function TabBar<Id extends string>({ tabs, active, onChange }: TabBarProp
             onClick={() => onChange(tab.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={clsx(
-              'whitespace-nowrap rounded-t-md border-b-2 px-3 py-2 text-xs font-bold uppercase tracking-wider transition-[color,opacity] duration-[var(--duration-fast)] ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-wall-bg',
+              'relative whitespace-nowrap rounded-t-md px-3 py-2 text-xs font-bold uppercase tracking-wider transition-[color,opacity] duration-[var(--duration-fast)] ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-wall-bg',
               selected
-                ? clsx('bg-wall-panel', styles.text, styles.borderB)
-                : 'border-transparent text-wall-muted opacity-70 hover:text-slate-300 hover:opacity-100',
+                ? 'bg-wall-panel text-white'
+                : 'text-wall-muted opacity-70 hover:text-white hover:opacity-100',
             )}
           >
             {tab.label}
+            {selected && (
+              <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-blue-500 via-sky-500 to-green-500" />
+            )}
           </button>
         )
       })}
