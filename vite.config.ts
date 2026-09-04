@@ -13,5 +13,8 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.test.{ts,tsx}'],
+    pool: 'forks',
+    maxWorkers: 1,
+    fileParallelism: false,
   },
 })

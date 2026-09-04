@@ -10,6 +10,9 @@ import { WeekSummary } from '../panels/WeekSummary'
 export function OverviewTab() {
   return (
     <div className="space-y-2">
+      <header className="px-1 pb-1">
+        <h1 className="text-sm font-bold uppercase tracking-[0.18em] text-slate-200">Market Snapshot</h1>
+      </header>
       <QuoteCarousel />
       <CryptoGrid />
       <div className="grid gap-2 md:grid-cols-2">
