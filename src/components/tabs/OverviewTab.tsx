@@ -9,22 +9,22 @@ import { WeekSummary } from '../panels/WeekSummary'
 
 export function OverviewTab() {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <header className="px-1 pb-1">
-        <h1 className="text-sm font-bold uppercase tracking-[0.18em] text-slate-200">Market Snapshot</h1>
+        <h1 className="text-sm font-bold uppercase tracking-[0.18em] text-wall-text-secondary">Market Snapshot</h1>
       </header>
       <QuoteCarousel />
       <CryptoGrid />
-      <div className="grid gap-2 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         <FearGreedGauge />
         <KeyLevels />
       </div>
       <MarketPulse />
-      <div className="grid gap-2 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         <TermOfTheDay />
         <WeekSummary />
       </div>
-      <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         <NewsPanel feed="crypto" title="Crypto" accent="orange" limit={4} />
         <NewsPanel feed="markets" title="Markets" accent="magenta" limit={4} />
         <NewsPanel feed="geo" title="Geo / War" accent="red" limit={4} />

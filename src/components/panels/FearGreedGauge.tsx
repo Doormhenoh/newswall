@@ -33,6 +33,7 @@ export function FearGreedGauge({ className }: { className?: string }) {
   return (
     <Panel
       title="Crypto Fear & Greed"
+      icon="gauge"
       accent="orange"
       updatedAt={dataUpdatedAt}
       isLoading={isPending}
@@ -62,7 +63,7 @@ export function FearGreedGauge({ className }: { className?: string }) {
               x="100"
               y="86"
               textAnchor="middle"
-              className="fill-slate-100"
+              className="fill-wall-text"
               fontSize="36"
               fontWeight="700"
               fontFamily="monospace"
@@ -74,7 +75,7 @@ export function FearGreedGauge({ className }: { className?: string }) {
             {zone}
           </div>
           <div className="mt-3 w-full">
-            <div className="mb-1 text-[10px] uppercase tracking-wide text-wall-muted">
+            <div className="mb-1 text-[11px] uppercase tracking-wide text-wall-muted">
               30-day trend
             </div>
             <Sparkline data={history} trend={monthTrend} className="h-8 w-full" />

@@ -31,7 +31,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           <p className="max-w-md text-xs text-wall-muted">{this.state.error.message}</p>
           <button
             onClick={() => this.setState({ error: null })}
-            className="rounded border border-wall-border px-3 py-1 text-xs text-slate-300 transition-colors hover:bg-wall-card"
+            className="rounded border border-wall-border px-3 py-1 text-xs text-wall-text-secondary transition-colors hover:bg-wall-card"
           >
             Try again
           </button>

@@ -48,14 +48,15 @@ export function MarketPulse({ className }: { className?: string }) {
   return (
     <Panel
       title="Market Pulse"
+      icon="chart-line"
       accent="green"
       updatedAt={earliestUpdate === Infinity ? 0 : earliestUpdate}
       isLoading={isPending && !isReady}
       isError={false}
       className={className}
     >
-      <p className="text-sm leading-relaxed text-slate-300">{paragraph}</p>
-      <p className="mt-2 text-[10px] text-wall-muted">
+      <p className="text-sm leading-relaxed text-wall-text-secondary">{paragraph}</p>
+      <p className="mt-2 text-[11px] text-wall-muted">
         Auto-generated from live data — not investment advice.
       </p>
     </Panel>

@@ -1,4 +1,5 @@
 import { clsx } from 'clsx'
+import { CoinIcon } from '../../lib/coinIcons'
 import { formatPrice } from '../../lib/format'
 import { useCoinTickers, useQuotes } from '../../lib/queries'
 import { ChangePct } from './ChangePct'
@@ -9,6 +10,7 @@ interface StripItem {
   label: string
   price: number
   changePct: number | null
+  coin?: boolean
 }
 
 function Item({ item, first }: { item: StripItem; first: boolean }) {
@@ -19,10 +21,11 @@ function Item({ item, first }: { item: StripItem; first: boolean }) {
         !first && 'border-l border-wall-border/60',
       )}
     >
-      <span className="text-[10px] font-bold uppercase tracking-wider text-wall-muted">
+      {item.coin && <CoinIcon symbol={item.label} size={16} />}
+      <span className="text-[11px] font-bold uppercase tracking-wider text-wall-muted">
         {item.label}
       </span>
-      <span className="font-mono text-sm text-slate-100">{formatPrice(item.price)}</span>
+      <span className="font-mono tabular-nums text-sm text-wall-text">{formatPrice(item.price)}</span>
       <ChangePct value={item.changePct} className="text-xs" />
     </div>
   )
@@ -42,7 +45,7 @@ export function TickerStrip() {
   }
   for (const ticker of ['BTC', 'ETH']) {
     const coin = coins.data?.find((c) => c.symbol === ticker)
-    if (coin) items.push({ label: coin.symbol, price: coin.price, changePct: coin.changePct24h })
+    if (coin) items.push({ label: coin.symbol, price: coin.price, changePct: coin.changePct24h, coin: true })
   }
 
   if (items.length === 0) {

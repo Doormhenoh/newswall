@@ -50,11 +50,11 @@ export const ACCENT_STYLES: Record<Accent, AccentStyle> = {
     badge: 'bg-orange-500/15 text-orange-400',
   },
   yellow: {
-    text: 'text-sky-400',
-    border: 'border-sky-500/30',
-    borderB: 'border-b-sky-500',
-    borderT: 'border-t-sky-500/80',
-    badge: 'bg-sky-500/15 text-sky-400',
+    text: 'text-yellow-400',
+    border: 'border-yellow-500/30',
+    borderB: 'border-b-yellow-500',
+    borderT: 'border-t-yellow-500/80',
+    badge: 'bg-yellow-500/15 text-yellow-400',
   },
   purple: {
     text: 'text-purple-400',

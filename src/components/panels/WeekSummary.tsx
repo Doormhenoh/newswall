@@ -15,6 +15,7 @@ export function WeekSummary({ className }: { className?: string }) {
   return (
     <Panel
       title="Weekly Index Moves"
+      icon="chart-line"
       accent="blue"
       updatedAt={dataUpdatedAt}
       isLoading={isPending}
@@ -36,7 +37,7 @@ export function WeekSummary({ className }: { className?: string }) {
             return (
               <tr key={quote.symbol} className="border-b border-wall-border/40 last:border-0">
                 <td className="py-1.5 pr-2 text-wall-muted">{quote.label}</td>
-                <td className="py-1.5 pr-2 text-right font-mono text-slate-200">
+                <td className="py-1.5 pr-2 text-right font-mono tabular-nums text-wall-text-secondary">
                   {formatPrice(quote.price)}
                 </td>
                 <td className="py-1.5 text-right">
@@ -47,7 +48,7 @@ export function WeekSummary({ className }: { className?: string }) {
           })}
         </tbody>
       </table>
-      <p className="mt-2 text-[10px] text-wall-muted">Change over the last 5 trading sessions</p>
+      <p className="mt-2 text-[11px] text-wall-muted">Change over the last 5 trading sessions</p>
     </Panel>
   )
 }

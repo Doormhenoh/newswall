@@ -53,7 +53,7 @@ function CarouselCard({ quote }: { quote: Quote | QuoteError }) {
         </span>
         <ChangePct value={quote.changePct} className="text-xs" />
       </div>
-      <div className="mt-1 font-mono tabular-nums text-lg text-slate-100">{formatPrice(quote.price)}</div>
+      <div className="mt-1 font-mono tabular-nums text-lg text-wall-text">{formatPrice(quote.price)}</div>
       <Sparkline
         data={quote.sparkline}
         trend={trendOf(quote.changePct)}

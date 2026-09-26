@@ -1,6 +1,7 @@
 import { QUOTE_SYMBOLS } from '../../../server/symbols'
 import type { Quote, QuoteError } from '../../types'
 import type { Accent } from '../../lib/accents'
+import type { PanelIconName } from '../../lib/panelIcons'
 import { formatPrice } from '../../lib/format'
 import { ALL_QUOTE_SYMBOLS, useQuotes } from '../../lib/queries'
 import { trendOf } from '../../lib/signals'
@@ -19,6 +20,7 @@ function symbolsInGroup(group: 'index' | 'commodity'): string[] {
 interface QuoteGridProps {
   title: string
   accent: Accent
+  icon?: PanelIconName
   badge?: string
   /** Filter by group, or pass explicit symbols; defaults to all */
   group?: 'index' | 'commodity'
@@ -45,7 +47,7 @@ function QuoteCard({ quote }: { quote: Quote | QuoteError }) {
         </span>
         <ChangePct value={quote.changePct} className="text-xs" />
       </div>
-      <div className="mt-1 font-mono text-lg text-slate-100">{formatPrice(quote.price)}</div>
+      <div className="mt-1 font-mono text-lg text-wall-text">{formatPrice(quote.price)}</div>
       <Sparkline
         data={quote.sparkline}
         trend={trendOf(quote.changePct)}
@@ -55,7 +57,7 @@ function QuoteCard({ quote }: { quote: Quote | QuoteError }) {
   )
 }
 
-export function QuoteGrid({ title, accent, badge, group, symbols, className }: QuoteGridProps) {
+export function QuoteGrid({ title, accent, icon, badge, group, symbols, className }: QuoteGridProps) {
   const { data, isPending, isError, refetch, dataUpdatedAt } = useQuotes()
   const wanted = symbols ?? (group ? symbolsInGroup(group) : ALL_QUOTE_SYMBOLS)
   const visible = (data?.quotes ?? []).filter((q) => wanted.includes(q.symbol))
@@ -63,6 +65,7 @@ export function QuoteGrid({ title, accent, badge, group, symbols, className }: Q
   return (
     <Panel
       title={title}
+      icon={icon}
       accent={accent}
       badge={badge}
       updatedAt={dataUpdatedAt}

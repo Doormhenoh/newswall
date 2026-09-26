@@ -55,7 +55,7 @@ export default function App() {
           </Suspense>
         </ErrorBoundary>
       </main>
-      <footer className="mx-auto max-w-7xl px-4 pb-6 text-center text-[10px] text-wall-muted">
+      <footer className="mx-auto max-w-7xl px-4 pb-6 text-center text-[11px] text-wall-muted">
         Data: Yahoo Finance · Stooq · Binance · alternative.me · public RSS feeds — auto-refreshing.
         Informational only, not investment advice.
       </footer>

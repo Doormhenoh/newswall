@@ -5,7 +5,9 @@
   --color-wall-panel: #1e1e1e;
   --color-wall-card: #262626;
   --color-wall-border: #1f2937;
-  --color-wall-muted: #d1d5db;
+  --color-wall-text: #f1f5f9;
+  --color-wall-text-secondary: #d1d5db;
+  --color-wall-muted: #9ca3af;
 
   --font-display: 'Raleway', system-ui, sans-serif;
   --font-body: 'Montserrat', system-ui, sans-serif;
@@ -25,7 +27,7 @@
     color-scheme: dark;
   }
   body {
-    @apply bg-wall-bg font-body text-[#f3f4f6] antialiased;
+    @apply bg-wall-bg font-body text-wall-text antialiased;
   }
   :focus-visible {
     outline: 2px solid rgb(99 102 241 / 0.6);

@@ -1,8 +1,19 @@
 import { clsx } from 'clsx'
 import { ACCENT_STYLES, type Accent } from '../../lib/accents'
 import { timeAgo } from '../../lib/format'
+import type { PanelIconName } from '../../lib/panelIcons'
 import { useNews, type FeedId } from '../../lib/queries'
 import { Panel } from './Panel'
+
+const FEED_ICON: Record<FeedId, PanelIconName> = {
+  crypto: 'coins',
+  markets: 'chart-line',
+  geo: 'globe',
+  macro: 'bank',
+  tech: 'cpu',
+  corporate: 'briefcase',
+  energy: 'bar-chart',
+}
 
 interface NewsPanelProps {
   feed: FeedId
@@ -21,6 +32,7 @@ export function NewsPanel({ feed, title, accent, badge, limit = 10, className }:
   return (
     <Panel
       title={title}
+      icon={FEED_ICON[feed]}
       accent={accent}
       badge={badge}
       updatedAt={dataUpdatedAt}
@@ -40,14 +52,14 @@ export function NewsPanel({ feed, title, accent, badge, limit = 10, className }:
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm leading-snug text-slate-200 transition-[color,opacity] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-white focus-visible:text-white focus-visible:underline focus-visible:outline-none"
+                className="text-sm leading-snug text-wall-text-secondary transition-[color,opacity] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-white focus-visible:text-white focus-visible:underline focus-visible:outline-none"
               >
                 {item.title}
               </a>
             ) : (
-              <span className="text-sm leading-snug text-slate-200">{item.title}</span>
+              <span className="text-sm leading-snug text-wall-text-secondary">{item.title}</span>
             )}
-            <div className="mt-0.5 flex gap-2 text-[10px] uppercase tracking-wide text-wall-muted">
+            <div className="mt-0.5 flex gap-2 text-[11px] uppercase tracking-wide text-wall-muted">
               <span className={clsx('font-semibold', styles.text)}>{item.source}</span>
               {item.publishedAt !== null && <span>{timeAgo(item.publishedAt)}</span>}
             </div>

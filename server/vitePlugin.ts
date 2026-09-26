@@ -1,6 +1,7 @@
 import type { ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
 import { handleNews, handleQuote, type HandlerResult } from './handlers'
+import { checkRateLimit } from './rateLimit'
 
 // Dev-only niceties: serve the same handlers the Vercel functions use, with a
 // small in-memory TTL cache so HMR reloads don't hammer upstreams. Full
@@ -8,6 +9,10 @@ import { handleNews, handleQuote, type HandlerResult } from './handlers'
 // would break Vite HMR in dev.
 
 type ApiRoute = '/api/quote' | '/api/news'
+const RATE_LIMITS: Record<ApiRoute, number> = {
+  '/api/quote': 30,
+  '/api/news': 10,
+}
 const DEV_CACHE_TTL: Record<ApiRoute, number> = {
   '/api/quote': 60_000,
   '/api/news': 600_000,
@@ -37,6 +42,16 @@ export function newswallApi(): Plugin {
         const url = new URL(req.url ?? '/', 'http://localhost')
         const route = url.pathname
         if (!isApiRoute(route)) return next()
+
+        const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ?? req.socket.remoteAddress ?? '127.0.0.1'
+        const rl = checkRateLimit(ip, route, RATE_LIMITS[route])
+        if (!rl.ok) {
+          res.statusCode = 429
+          res.setHeader('Retry-After', String(rl.retryAfter))
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: 'rate limit exceeded', retryAfter: rl.retryAfter }))
+          return
+        }
 
         const cacheKey = `${route}?${url.searchParams.toString()}`
         const hit = devCache.get(cacheKey)

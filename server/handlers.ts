@@ -77,6 +77,40 @@ async function fetchTextCapped(url: string, accept: string): Promise<string> {
   return new TextDecoder('utf-8').decode(merged)
 }
 
+// ─── Simple circuit breaker ──────────────────────────────────────────────────
+
+interface CircuitState {
+  failures: number
+  openUntil: number
+}
+
+const circuits = new Map<string, CircuitState>()
+const CIRCUIT_THRESHOLD = 3
+const CIRCUIT_RESET_MS = 5 * 60_000
+
+function isCircuitOpen(source: string): boolean {
+  const state = circuits.get(source)
+  if (!state) return false
+  if (Date.now() >= state.openUntil) {
+    circuits.delete(source)
+    return false
+  }
+  return state.failures >= CIRCUIT_THRESHOLD
+}
+
+function recordFailure(source: string) {
+  const state = circuits.get(source) ?? { failures: 0, openUntil: 0 }
+  state.failures++
+  if (state.failures >= CIRCUIT_THRESHOLD) {
+    state.openUntil = Date.now() + CIRCUIT_RESET_MS
+  }
+  circuits.set(source, state)
+}
+
+function recordSuccess(source: string) {
+  circuits.delete(source)
+}
+
 // ─── Quotes: Yahoo chart endpoint with Stooq CSV fallback ─────────────────────
 
 interface YahooChartMeta {
@@ -191,16 +225,26 @@ export async function handleQuote(symbolsParam: string | null): Promise<HandlerR
 
   const quotes = await Promise.all(
     resolved.map(async ({ symbol, def }): Promise<Quote | QuoteError> => {
-      try {
-        return await fetchYahooQuote(symbol, def)
-      } catch (yahooErr) {
+      const msg = (e: unknown) => e instanceof Error ? e.message : 'unknown'
+      let yahooErr: unknown = null
+      if (!isCircuitOpen('yahoo')) {
         try {
-          return await fetchStooqQuote(symbol, def)
-        } catch (stooqErr) {
-          const msg = (e: unknown) => e instanceof Error ? e.message : 'unknown'
-          console.warn(`[quote] ${symbol} failed: yahoo=${msg(yahooErr)} stooq=${msg(stooqErr)}`)
-          return { symbol, label: def.label, error: true }
+          const q = await fetchYahooQuote(symbol, def)
+          recordSuccess('yahoo')
+          return q
+        } catch (e) {
+          yahooErr = e
+          recordFailure('yahoo')
         }
+      }
+      try {
+        const q = await fetchStooqQuote(symbol, def)
+        recordSuccess('stooq')
+        return q
+      } catch (stooqErr) {
+        recordFailure('stooq')
+        console.warn(`[quote] ${symbol} failed: yahoo=${yahooErr ? msg(yahooErr) : 'circuit open'} stooq=${msg(stooqErr)}`)
+        return { symbol, label: def.label, error: true }
       }
     }),
   )

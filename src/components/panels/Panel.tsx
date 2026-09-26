@@ -2,14 +2,17 @@ import type { ReactNode } from 'react'
 import { clsx } from 'clsx'
 import { ACCENT_STYLES, type Accent } from '../../lib/accents'
 import { timeAgo } from '../../lib/format'
+import { PanelIcon, type PanelIconName } from '../../lib/panelIcons'
 
 interface PanelProps {
   title: string
   accent: Accent
+  icon?: PanelIconName
   badge?: string
   updatedAt?: number
   isLoading?: boolean
   isError?: boolean
+  errorMessage?: string
   onRetry?: () => void
   className?: string
   children?: ReactNode
@@ -42,10 +45,12 @@ function Skeleton() {
 export function Panel({
   title,
   accent,
+  icon,
   badge,
   updatedAt,
   isLoading,
   isError,
+  errorMessage,
   onRetry,
   className,
   children,
@@ -54,6 +59,11 @@ export function Panel({
   return (
     <section className={clsx('flex flex-col rounded-lg border-t-2 bg-wall-panel shadow-[var(--shadow-panel)]', styles.borderT, className)}>
       <header className="flex items-center gap-2 border-b border-wall-border/40 px-3 py-2">
+        {icon && (
+          <span className={clsx('shrink-0', styles.text)}>
+            <PanelIcon name={icon} />
+          </span>
+        )}
         {badge && (
           <span
             className={clsx(
@@ -66,17 +76,17 @@ export function Panel({
         )}
         <h2 className={clsx('text-xs font-bold uppercase tracking-widest', styles.text)}>{title}</h2>
         {updatedAt !== undefined && updatedAt > 0 && (
-          <span className="ml-auto text-[10px] text-wall-muted">{timeAgo(updatedAt)}</span>
+          <span className="ml-auto text-[11px] text-wall-muted">{timeAgo(updatedAt)}</span>
         )}
       </header>
-      <div className="flex-1 p-2.5">
+      <div className="flex-1 p-3">
         {isError ? (
           <div className="flex flex-col items-center gap-2 py-6 text-sm text-wall-muted">
-            <span>Data unavailable</span>
+            <span>{errorMessage ?? 'Data unavailable'}</span>
             {onRetry && (
               <button
                 onClick={onRetry}
-                className="rounded border border-wall-border px-3 py-1 text-xs text-slate-300 transition-[background-color,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:bg-wall-card hover:shadow-[var(--shadow-card)]"
+                className="rounded border border-wall-border px-3 py-1 text-xs text-wall-text-secondary transition-[background-color,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:bg-wall-card hover:shadow-[var(--shadow-card)]"
               >
                 Retry
               </button>

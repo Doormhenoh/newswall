@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import type { FeedId } from '../../server/feeds'
 import { QUOTE_SYMBOLS } from '../../server/symbols'
 import type { NewsResponse, QuotesResponse } from '../types'
@@ -36,6 +36,7 @@ export function useQuotes() {
       getJson<QuotesResponse>(`/api/quote?symbols=${encodeURIComponent(ALL_QUOTE_SYMBOLS.join(','))}`),
     refetchInterval: MINUTE,
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -54,6 +55,7 @@ export function useCoinTickers() {
     queryFn: fetchCoinTickers,
     refetchInterval: MINUTE,
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -72,6 +74,7 @@ export function useFearGreed() {
     queryFn: fetchFearGreed,
     refetchInterval: 30 * MINUTE,
     staleTime: 15 * MINUTE,
+    placeholderData: keepPreviousData,
   })
 }
 
@@ -88,6 +91,7 @@ export function useBtcCandles() {
     },
     refetchInterval: 60 * MINUTE,
     staleTime: 30 * MINUTE,
+    placeholderData: keepPreviousData,
   })
 }
 
